@@ -1,5 +1,7 @@
 pipeline {
     agent { label 'linux' }
+    agent { label 'docker' }
+
     stages {
         stage ('Checkout') {
           steps {
@@ -7,7 +9,14 @@ pipeline {
           }
         }
         stage('Build') {
-            agent { docker 'maven:3.5-alpine' }
+            //agent { docker 'maven:3.5-alpine' }
+            agent {
+                docker {
+             // Set both label and image
+                 label 'docker'
+                 image 'maven:3.5-alpine'
+            }
+      }
             steps {
                 sh 'mvn clean package'
                 junit '**/target/surefire-reports/TEST-*.xml'
